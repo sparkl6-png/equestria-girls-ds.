@@ -8,19 +8,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: devkitpro/devkitarm:latest
+      image: devkitpro/devkitarm:20241104
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Nintendo DS libraries
+      - name: Verify devkitPro tools
         run: |
-          dkp-pacman -Sy --noconfirm
-          dkp-pacman -S --noconfirm nds-dev
+          export DEVKITPRO=/opt/devkitpro
+          test -d "$DEVKITPRO/libnds"
+          command -v make
+          command -v ndstool
 
       - name: Build .nds ROM
         run: |
           export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM="$DEVKITPRO/devkitARM"
           make
           mkdir -p build
           find . -maxdepth 4 -type f -name '*.nds' ! -path './build/*' -exec cp {} build/equestria-girls-ds.nds \;
