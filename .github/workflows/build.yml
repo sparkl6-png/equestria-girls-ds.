@@ -19,6 +19,8 @@ jobs:
       - name: Build .nds ROM
         run: |
           make
+          mkdir -p build
+          find . -maxdepth 3 -type f -name '*.nds' ! -path './build/*' -exec cp {} build/equestria-girls-ds.nds \;
           test -s build/equestria-girls-ds.nds
 
       - name: Upload ROM artifact
