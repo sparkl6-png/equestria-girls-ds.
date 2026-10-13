@@ -1,0 +1,29 @@
+name: Build Nintendo DS prototype
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install devkitPro toolchain
+        uses: devkitPro/pacman-action@v1
+        with:
+          packages: nds-dev
+
+      - name: Build .nds ROM
+        run: |
+          make
+          test -s build/equestria-girls-ds.nds
+
+      - name: Upload ROM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: equestria-girls-ds-nds
+          path: build/equestria-girls-ds.nds
+          if-no-files-found: error
